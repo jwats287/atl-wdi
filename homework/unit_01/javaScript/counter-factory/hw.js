@@ -49,75 +49,49 @@ const CounterCollection = {
 const Presenter = {
   insertCounterComponent: function(newCountId){
     console.log(`insert counter component #${newCountId}`);
-    // Your Code Here
+    let newCounterComponent = document.createElement('div');
+    newCounterComponent.innerHTML =
+    `<h3>Count: <span>0</span></h3> <button class='increment'> +1 </button> <button class='delete'> Delete </button>`;
+    newCounterComponent.className += ' counter';
+    newCounterComponent.dataset.countId = newCountId;
+    newCounterComponent.getElementsByClassName('increment')[0].onclick= AppController.onClickIncrement;
+    newCounterComponent.getElementsByClassName('delete')[0].onclick = AppController.onClickDelete;
+    document.getElementById('counter-list').appendChild(newCounterComponent);
   },
   refreshCounterComponent: function(countId){
     console.log(`refresh counter component #${countId}`);
-    // Your Code Here
+    let val = CounterCollection.getCounterValue(countId);
+    document.querySelector(`[data-count-id="${countId}"] span`).innerHTML = val;
   },
   removeCounterComponent: function(countId){             // REACH
     console.log(`remove counter component #${countId}`);
-    // Your Code Here
+    let counterComponent = document.querySelector(`[data-count-id="${countId}"]`)
+    console.log(counterComponent, counterComponent.parent);
+    counterComponent.parentNode.removeChild(counterComponent);
   }
 };
-    // var counterNumber = 1;
 
 // Top-Level Application Control //
 const AppController = {
-  counterNumber: 1,
-  addOne: null,
-  deleteButton: null,
-  i: 0,
-
   onClickNewCounter: function(event){
-    console.log("You asked for a new counter!");
-    // document.getElementById('counter-list').innerHTML = htmlMarkup;
-    var newDiv = document.createElement("div");
-    newDiv.setAttribute('data-index', AppController.i);
-    var node = document.createTextNode('');
-    // var node = document.getElementById('fancy-div').innerHTML = htmlMarkup;
-    newDiv.appendChild(node);
-    var element = document.getElementById('counter-list');
-    element.appendChild(newDiv);
-    // var fancyDiv = document.querySelectorAll("[data-index]");
-    document.querySelectorAll("[data-index]")[AppController.i].innerHTML = htmlMarkup;
-    AppController.addOne = document.getElementsByClassName('increment')[0].addEventListener('click', AppController.helpWriteThis);
-    AppController.deleteButton = document.getElementsByClassName('delete')[0].addEventListener('click', AppController.deleteThis);
-    // AppController.counterNumber = 1;
-    // AppController.counterNumber = 1;
-    // AppController.counterNumber = 1;
-    AppController.i++;
-    console.log(AppController.i);
+    CounterCollection.createCounter();
+    Presenter.insertCounterComponent(CounterCollection.lastCountId);
+    console.log(`click new counter (#${CounterCollection.lastCountId})`);
   },
   onClickIncrement: function(event){
-    // var clickIncrement = document.querySelector(':.counter > h3 > span').innerHTML = 3;
+    let countId = Number(event.target.parentNode.dataset.countId);
+    console.log(`click increment #${countId}`);
+    CounterCollection.incrementCounter(countId);
+    Presenter.refreshCounterComponent(countId);
   },
   onClickDelete: function(event){                           // REACH
-    // Your Code Here
-  },
-  helpWriteThis: function(event){
-    console.log("you clicked a button")
-    document.querySelector('.counter h3 span').innerHTML = AppController.counterNumber;
-    console.log(AppController.counterNumber);
-    AppController.counterNumber++;
-  },
-  deleteThis: function(event){
-    document.getElementsByClassName('counter')[0].remove();
+    let countId = Number(event.target.parentNode.dataset.countId);
+    console.log(`click delete #${countId}`);
+    CounterCollection.incrementCounter(countId);
+    Presenter.removeCounterComponent(countId);
   }
 };
 
 window.onload = function(){
-  // var counterNumber = 1;
-  if (!document.getElementsByClassName('increment')[0] === undefined){
-    var addOne = document.getElementsByClassName('increment')[0].addEventListener('click', AppController.helpWriteThis);
-    var deleteButton = document.getElementById('delete').addEventListener('click', AppController.deleteThis);
-    var newCounterButton = document.getElementById('new-counter').addEventListener('click', AppController.onClickNewCounter);
-} else {
-  var newCounterButton = document.getElementById('new-counter').addEventListener('click', AppController.onClickNewCounter);
-}
+  document.getElementById('new-counter').onclick = AppController.onClickNewCounter;
 };
-  var htmlMarkup = `<div class='counter'>
-  <h3>Count: <span>0</span></h3>
-  <button class='increment'> + 1 </button>
-  <button class='delete'>Delete</button>
-</div>`;
