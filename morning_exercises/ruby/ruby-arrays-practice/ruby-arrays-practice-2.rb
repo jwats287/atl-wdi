@@ -18,7 +18,12 @@ users = [
     }
 ]
 
-first_user = ???
+first_user = nil
+
+upper_case_full_names = people.map do |person|
+    first_user = person
+end
+
 
 # 2. Find the first customer's account balance
 
